@@ -4,6 +4,7 @@
  */
 
 var async = require('async')
+	, pkg = require('../package.json');
 
 
 /**
@@ -14,7 +15,7 @@ module.exports = function (app, twitter) {
 
 	app.get('/', function(req, res) {
         res.render('index', {
-        	title : 'Twitter Streaming Wall',
+        	title : pkg.title,
         	tags : twitter.globalState.tags
         });
 	});

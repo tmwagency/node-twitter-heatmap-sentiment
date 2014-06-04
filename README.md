@@ -1,9 +1,9 @@
-Node Twitter Location Heatmap
-====================
+Node Twitter Location Heatmap with Sentiment analysis
+===================================
 
-This builds on the initial demos - the [Node Basic Structure demo](https://github.com/tmwagency/node-basic-setup) and the [Node Twitter Wall demo](https://github.com/tmwagency/node-twitter-wall).
+This builds on the initial demos - the [Node Basic Structure demo](https://github.com/tmwagency/node-basic-setup) and the [Node Twitter Location Heatmap](https://github.com/tmwagency/node-twitter-heatmap).
 
-This demo shows how to hook into the Twitter streaming API to display a heatmap of where in the UK tweets are currently being sent.
+This demo shows how to hook into the Twitter streaming API to display a heatmap of where in the UK tweets are currently being sent, visualising each tweet in terms of the sentiment of the text.
 
 Building on the basic app's structure, it uses Desmond Morris' node-twitter library to connect to Twitter.
 

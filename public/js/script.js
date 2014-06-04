@@ -11,12 +11,12 @@ TMW.TwitterHeatMap = {
 		center: new google.maps.LatLng(54.559322, -4.174804),
 		zoom: 5,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
-		streetViewControl: false,
+		streetViewControl: true,
 		scaleControl: true
 	},
 
 	ANIMATON_DURATION : 60, //assuming 60 frames per second, our animation should last a second (60 frames)
-	FILL_OPACITY : 0.35,
+	FILL_OPACITY : 0.8,
 
 
 	init : function () {
@@ -72,14 +72,14 @@ TMW.TwitterHeatMap = {
 		//if we have coordinates, great – means we don't have to look up ourselves
 		if (data.coordinates !== null) {
 			var coords = data.coordinates.coordinates;
-			cb (coords);
+			cb (data, coords);
 
 		//if not, we need to check the 'place' attribute, and do the coord lookup ourself using the Maps API
 		} else {
 			var place = data.place;
 
-			TMW.TwitterHeatMap.lookupCoordsFromPlace(place, function (coords) {
-				cb (coords);
+			TMW.TwitterHeatMap.lookupCoordsFromPlace(place, function (data, coords) {
+				cb (data, coords);
 			});
 		}
 
@@ -87,7 +87,7 @@ TMW.TwitterHeatMap = {
 
 
 	//looks up the coordinates using the Maps API from the place details that we were sent by twitter
-	lookupCoordsFromPlace : function (place, cb) {
+	lookupCoordsFromPlace : function (data, place, cb) {
 
 		var geocoder = new google.maps.Geocoder(),
 			address = place.full_name + ', ' + place.country;
@@ -99,7 +99,7 @@ TMW.TwitterHeatMap = {
 			if (results !== null && status === 'OK') {
 				coords[0] = results[0].geometry.location['A'];
 				coords[1] = results[0].geometry.location['k'];
-				cb (coords);
+				cb (data, coords);
 			}
 
 		});
@@ -107,21 +107,24 @@ TMW.TwitterHeatMap = {
 	},
 
 
-	renderTweetToMap : function (coords, trackedOn) {
+	renderTweetToMap : function (data, coords, trackedOn) {
 
 		//position: myLatlng,
 		if (coords[0] !== null && coords[1] !== null) {
 
+			log(data.text);
+
 			//work out the radius we should use based on the zoom level
 			//TMW.TwitterHeatMap.heatMap.get(zoom);
 			//20000
+			var sentimentColour = TMW.TwitterHeatMap.getSentimentColour(data.sentiment)
 
 			var pointLatlng = new google.maps.LatLng(coords[1], coords[0]),
 				pointOptions = {
-					strokeColor: '#FF0000',
+					strokeColor: sentimentColour[1],
 					strokeOpacity: 0.8,
 					strokeWeight: 1,
-					fillColor: '#FF0000',
+					fillColor: sentimentColour[0],
 					fillOpacity: TMW.TwitterHeatMap.FILL_OPACITY,
 					map: TMW.TwitterHeatMap.heatMap,
 					center: pointLatlng,
@@ -135,6 +138,22 @@ TMW.TwitterHeatMap = {
 
 	},
 
+	getSentimentColour : function (sentiment) {
+
+		var colours;
+
+		if (sentiment.score > 0) {
+			colours = ['#168600', '#000'];
+		} else if (sentiment.score < 0) {
+			colours = ['#bb0000', '#000'];
+		} else {
+			colours = ['#d56e00', '#d2d000']
+		}
+
+		return colours;
+
+	},
+
 	animationLoop : function () {
 
 		TMW.TwitterHeatMap.animateCircles();
@@ -145,7 +164,7 @@ TMW.TwitterHeatMap = {
 
 	animateCircles : function () {
 
-		var i = 0,
+		var i = TMW.TwitterHeatMap.tweetCircles.length,
 			numberOfCircles = TMW.TwitterHeatMap.tweetCircles.length,
 			point,
 			fillOpacity,
@@ -153,7 +172,7 @@ TMW.TwitterHeatMap = {
 			strokeOpacity,
 			strokeDecrement;
 
-		for (i, numberOfCircles; i < numberOfCircles; i++) {
+		while (i--) {
 
 			point = TMW.TwitterHeatMap.tweetCircles[i];
 
@@ -202,6 +221,8 @@ TMW.TwitterHeatMap = {
 
 				//remove our circle as it's now invisible to the canvas
 				point.setMap(null);
+
+				TMW.TwitterHeatMap.tweetCircles.splice(i, 1);
 
 			}
 		}

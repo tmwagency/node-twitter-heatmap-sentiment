@@ -9,10 +9,11 @@ var express = require('express')
 	, client = require('socket.io-client')
 	, twitter = require('twitter') //ntwitter - allows easy JS access to twitter API's - https://github.com/AvianFlu/ntwitter
 	, _ = require('underscore')
+	, sentiment = require('sentiment')
 
 	, pkg = require('../package.json'),
 
-	backoffTimer = 0,
+	backoffTimer = 60000,
 
 	BACKOFF_INCREMENT = 60000; //increments of a minute
 
@@ -83,25 +84,20 @@ module.exports = function (app, server, config) {
 			//catch any errors from the streaming API
 			stream.on('error', function(error) {
 				console.log("twitter.js: My error: ", error);
-
-				//try reconnecting to twitter in 30 seconds
-				setTimeout(function () {
-					t.openStream();
-				}, backoffTimer);
-
 			});
 			stream.on('end', function (response) {
 				// Handle a disconnection
 				console.log("twitter.js: Disconnection: ", response.statusCode);
-
-				if (response.statusCode === '402') {
-					backoffTimer += BACKOFF_INCREMENT; //exponential backoff
-				}
+				console.log(response);
 
 				//try reconnecting to twitter in 30 seconds
 				setTimeout(function () {
 					t.openStream();
 				}, backoffTimer);
+
+				if (response.statusCode === '402') {
+					backoffTimer += BACKOFF_INCREMENT; //exponential backoff
+				}
 
 			});
 			stream.on('destroy', function (response) {
@@ -128,8 +124,19 @@ module.exports = function (app, server, config) {
 			//We're going to do some indexOf comparisons and we want it to be case agnostic
 			tweet = data;
 
+			tweet.sentiment = t.analyseSentiment(data.text);
+
 			socketServer.sockets.emit('tweet', tweet);
 		}
+	};
+
+	t.analyseSentiment = function (tweet) {
+
+		//analyse our tweet for sentiment
+		var sentimentScore = sentiment(tweet);
+
+		return sentimentScore;
+
 	};
 
 	t.openStream();
