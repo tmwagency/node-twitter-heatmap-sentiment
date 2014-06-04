@@ -1,0 +1,38 @@
+{
+  "name": "node-twitter-wall",
+  "title": "Twitter Streaming Wall",
+  "description": "A example to create a live Twitter wall",
+  "url": "http://www.github.com",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "4.3.2",
+    "compression": "1.0.2",
+    "morgan": "1.1.1",
+    "body-parser": "1.2.2",
+    "method-override": "1.0.2",
+
+    "jade": "1.3.1",
+    "socket.io": "1.0.3",
+    "socket.io-client": "1.0.3",
+    "underscore": "1.6.0",
+    "async": "0.9.0",
+    "twitter": "0.2.9"
+  },
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-devtools": "*",
+    "grunt-contrib-sass": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-copy": "*"
+  },
+  "subdomain": "twitterpoll",
+  "engines": {
+    "node": "0.10.x"
+  }
+}

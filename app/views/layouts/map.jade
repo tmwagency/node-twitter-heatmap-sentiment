@@ -1,0 +1,19 @@
+doctype html
+html
+	include ../includes/head
+
+	block vars
+
+	- if (subText === undefined)
+		- subText = 'Oops'
+
+	body
+		div(class="container")
+			include ../includes/header
+
+			.page-content
+				#heatmap.heatmap
+
+			include ../includes/footer
+
+	include ../includes/foot

@@ -1,0 +1,11 @@
+header.page-header
+	h2.page-header-title #{title}
+	p
+		| This application uses Node.js to create a streaming connection with Twitter.
+	p
+		| The Node application receives tweets in realtime that are geotagged as being in the UK and passes them to
+		| to any front-end clients currently connected using Socket.io.
+	p
+		em
+			| Last updated:&nbsp;
+			span(id="last-update") Never
