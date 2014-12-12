@@ -8,6 +8,12 @@ var sharedConfig = {
 	root: rootPath,
 	db : {
 		path: {}
+	},
+	twitter: {
+		consumer_key: process.env.TWITTER_CONSUMER_KEY,
+		consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+		access_token_key: process.env.TWITTER_ACCESS_TOKEN,
+		access_token_secret: process.env.TWITTER_ACCESS_SECRET
 	}
 };
 
@@ -18,7 +24,6 @@ config = {
 		app: {
 			name: 'Twitter vote counter - local'
 		},
-		twitter: require('./privconfig-twitter')['local'],
 		url:	'',
 		global:	sharedConfig
 	},
@@ -29,7 +34,6 @@ config = {
 		app: {
 			name: 'Twitter vote counter - Dev'
 		},
-		twitter: require('./privconfig-twitter')['dev'],
 		global:	sharedConfig
 	},
 
@@ -39,7 +43,6 @@ config = {
 		app: {
 			name: 'Twitter vote counter - Prod'
 		},
-		twitter: require('./privconfig-twitter')['prod'],
 		global:	sharedConfig
 	},
 

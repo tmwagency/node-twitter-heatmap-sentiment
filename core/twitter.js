@@ -52,7 +52,7 @@ module.exports = function (app, server, config) {
 	//  ====================================
 
 	//Instantiate the twitter component
-	var t = new twitter(config.twitter);
+	var t = new twitter(config.global.twitter);
 
 	//  ===============================
 	//  === State related function  ===
